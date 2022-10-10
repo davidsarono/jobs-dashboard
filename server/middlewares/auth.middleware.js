@@ -13,26 +13,34 @@ async function authMiddleware(req, res, next) {
         });
     }
 
-    const accessToken = await AccessToken.where('token', token).fetch();
+    try {
+        const accessToken = await AccessToken.where('token', token).fetch({ require: false });
 
-    if (!accessToken) {
-        return res.status(401).send({
-            data: null,
-            message: 'Please do login to get a valid Access Token'
-        });
-    }
-
-    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).send({
+        if (!accessToken) {
+            return res.status(401).send({
                 data: null,
-                message: err.message
+                message: 'Please do login to get a valid Access Token'
             });
         }
 
-        req.user = user
-        next();
-    });
+        jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+            if (err) {
+                return res.status(403).send({
+                    data: null,
+                    message: err.message
+                });
+            }
+
+            req.user = user
+            next();
+        });
+    } catch (error) {
+        return res.status(500).json({
+            data: null,
+            message: 'ERROR',
+            error
+        });
+    }
 }
 
 module.exports = authMiddleware;
