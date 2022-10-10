@@ -23,7 +23,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.extend(relativeTime);
 
-import Login from './pages/Login'
+import Login from './pages/Login';
 import Jobs from './pages/Jobs';
 import { AuthProvider, Constants, useAuth } from './context/AuthContext';
 import { CommonProvider, useCommon } from './context/CommonContext';
@@ -112,11 +112,12 @@ function AlertMessage() {
     <Collapse
       in={common.isOpen}
       sx={{
-        position: 'absolute',
+        position: 'sticky',
         width: '35%',
         top: 5,
         left: '50%',
-        transform: 'translate(-50%)'
+        transform: 'translate(-50%)',
+        zIndex: 9999
       }}
     >
       <Alert
@@ -128,7 +129,7 @@ function AlertMessage() {
             color="inherit"
             size="small"
             onClick={() => {
-              setCommon(prevState => ({ ...prevState, isOpen: false }))
+              setCommon(prevState => ({ ...prevState, isOpen: false, errorMessages: '' }))
             }}
           >
             <CloseIcon fontSize="inherit" />

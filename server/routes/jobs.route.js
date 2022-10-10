@@ -31,15 +31,15 @@ jobsRoute.get(
                 {
                     params: {
                         page: req.query?.page,
-                        description: req.query?.description,
-                        location: req.query?.location,
+                        description: req.query?.description?.toLowerCase?.() || undefined,
+                        location: req.query?.location?.toLowerCase?.() || undefined,
                         full_time: req.query?.full_time,
                     }
                 }
             );
 
             return res.status(200).json({
-                data: response.data,
+                data: response.data?.filter?.(item => item !== null) || [],
                 message: 'Success to get Jobs'
             });
         } catch (error) {

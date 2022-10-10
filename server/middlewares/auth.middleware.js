@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const AccessToken = require("../models/access_token.model");
+const AccessToken = require('../models/access_token.model');
 
 async function authMiddleware(req, res, next) {
     const authHeader = req.headers['authorization'];
@@ -19,7 +19,7 @@ async function authMiddleware(req, res, next) {
         return res.status(401).send({
             data: null,
             message: 'Please do login to get a valid Access Token'
-        })
+        });
     }
 
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
@@ -35,4 +35,4 @@ async function authMiddleware(req, res, next) {
     });
 }
 
-module.exports = authMiddleware
+module.exports = authMiddleware;

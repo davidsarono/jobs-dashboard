@@ -1,10 +1,6 @@
-import { useNavigate, useLocation, Navigate } from 'react-router-dom'
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -18,7 +14,7 @@ export default function Login() {
 
   const token = localStorage.getItem(Constants.TOKEN);
   if (token) {
-    return <Navigate to="/jobs" state={{ from: location }} replace />;
+    return <Navigate to="/jobs" state={{ from: location }} replace />
   }
 
   const handleSubmit = (event) => {
@@ -44,9 +40,9 @@ export default function Login() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign In
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -67,10 +63,6 @@ export default function Login() {
             id="password"
             autoComplete="current-password"
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
           <Button
             type="submit"
             fullWidth
@@ -79,18 +71,6 @@ export default function Login() {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
     </Container>

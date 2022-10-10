@@ -9,7 +9,7 @@ exports.up = function (knex) {
         table.string('token');
         table.dateTime('created_at').nullable().defaultTo(knex.fn.now());
         table.dateTime('updated_at').nullable().defaultTo(knex.fn.now());
-    })
+    });
 };
 
 /**
@@ -17,5 +17,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-    return knex.schema.dropTableIfExists('access_tokens')
+    return knex.schema.dropTableIfExists('access_tokens');
 };
