@@ -1,39 +1,62 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import instance from '../services/axios'
+import { useCommon } from './CommonContext';
 
-export const fakeAuthProvider = {
-    isAuthenticated: true,
-    signin(callback) {
-        fakeAuthProvider.isAuthenticated = true;
-        setTimeout(callback, 100); // fake async
-    },
-    signout(callback) {
-        fakeAuthProvider.isAuthenticated = false;
-        setTimeout(callback, 100);
-    },
-};
+const AuthContext = createContext(null);
 
-let AuthContext = createContext(null);
+export const Constants = {
+    TOKEN: 'token',
+    USER_NAME: 'user_name',
+    USER_ID: 'user_id'
+}
 
 export function AuthProvider({ children }) {
-    let [user, setUser] = useState(null);
+    const { setCommon } = useCommon();
 
-    let signin = (newUser, callback) => {
-        return fakeAuthProvider.signin(() => {
-            setUser(newUser);
+    const [auth, setAuth] = useState(null);
+
+    useEffect(() => {
+        const token = localStorage.getItem(Constants.TOKEN);
+        if (token) {
+            setAuth(prevState => ({ ...prevState, token }));
+        }
+    }, []);
+
+    const logIn = async (credentials, callback) => {
+        try {
+            const response = await instance.post(
+                '/auth/login',
+                credentials,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            localStorage.setItem(Constants.TOKEN, response.data.data.token);
+            localStorage.setItem(Constants.USER_ID, response.data.data.user.id);
+            localStorage.setItem(Constants.USER_NAME, response.data.data.user.username);
+            setAuth(prevState => ({ ...prevState, user: response.data.data.user, token: response.data.data.token }));
             callback();
-        });
+        } catch (error) {
+            setCommon(prevState => ({ ...prevState, errorMessages: error.response.data.message, isOpen: true }))
+        }
     };
 
-    let signout = (callback) => {
-        return fakeAuthProvider.signout(() => {
-            setUser(null);
-            callback();
-        });
-    };
+    const logOut = (callback) => {
+        localStorage.removeItem(Constants.TOKEN)
+        localStorage.removeItem(Constants.USER_ID)
+        localStorage.removeItem(Constants.USER_NAME)
+        callback();
+    }
 
-    let value = { user, signin, signout };
+    const value = { auth, logIn, logOut };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export function useAuth() {

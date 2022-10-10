@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Navigate } from 'react-router-dom'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -9,22 +8,26 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useAuth } from '../../context/AuthContext';
+import { Constants, useAuth } from '../../context/AuthContext';
 
 export default function Login() {
-  let auth = useAuth();
+  const { auth, logIn } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || '/';
 
-  let navigate = useNavigate();
-  let from = location.state?.from?.pathname || '/';
+  const token = localStorage.getItem(Constants.TOKEN);
+  if (token) {
+    return <Navigate to="/jobs" state={{ from: location }} replace />;
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    let email = data.get("email");
-    let password = data.get("password")
+    const username = data.get("username");
+    const password = data.get("password")
 
-    auth.signin(email, () => {
+    logIn({ username, password }, () => {
       navigate(from, { replace: true });
     });
   };
@@ -48,10 +51,10 @@ export default function Login() {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
             autoFocus
           />
           <TextField

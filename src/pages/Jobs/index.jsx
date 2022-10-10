@@ -20,12 +20,6 @@ import { TableHead } from '@mui/material';
 const rows = dummy
 
 const Jobs = () => {
-  useEffect(() => {
-    (async () => {
-      const res = await fetch(import.meta.env.VITE_API_URL)
-      const data = await res.json()
-    })()
-  }, [])
 
   const handleSubmit = (event) => {
     event.preventDefault();
