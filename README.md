@@ -1,31 +1,26 @@
-# React-and-Express-boilerplate
+# Jobs Dashboard
 
-Boilerplate to start developing a fullstack app with react as frontend and express as backend.
+[React](https://beta.reactjs.org/) and [ExpressJS](https://expressjs.com/) App that provide `auth`, `job list` and `job detail` with integration with external service.
 
-# Requirements
+This app made with boilerplate from [React-and-Express-boilerplate](https://github.com/vanaldito/React-and-Express-boilerplate)
 
-You most have installed a package manager as npm or yarn, and the package concurrently.
-You can do it with the next commands:
 
-For a global installation:
-
-```npm install -g concurrently```
-or
-```yarn global add concurrently```
-
-For a local installation:
-
-```npm install --save-dev concurrently```
-or
-```yarn add --dev concurrently```
-
-# Installation
-
-Run the next command to clone this repository
-
+## How to run
+1. create `.env` file from `.env.example` and fill its value with yours
+```bash
+cp .env.example .env
 ```
-git clone https:github.com/Vanaldito/React-and-Express-boilerplate.git
-cd React-and-Express-boilerplate
-rm .git -rf
-git init
+
+2. install all dependencies with `yarn`
+3. run migration with `yarn migrate`
+4. create user
+```bash
+curl --location --request GET 'localhost:5000/api/v1/auth/register' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "username": <your_email>,
+    "password": <your_password>
+}'
 ```
+5. login to `localhost:5000/login`
+6. make sure all functionality works well
