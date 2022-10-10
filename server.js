@@ -1,21 +1,20 @@
+require("dotenv").config();
+
 const express = require("express");
+const bodyParser = require('body-parser')
 const path = require("path");
+const assetsRouter = require("./server/assets-router");
+const routes = require('./server/routes/index.route');
 
 const app = express();
 
-const assetsRouter = require("./server/assets-router");
+app.use(bodyParser.json());
 
-app.use("/", express.static(path.join(__dirname, "public")));
+app.use('/', routes);
+
 app.use("/assets", assetsRouter);
 
-app.get("/api/v1", (req, res) => {
-  res.json({
-    project: "React and Express Boilerplate",
-    from: "Vanaldito",
-  });
-});
-
-app.get("/*", (_req, res) => {
+app.get("*", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 })
 

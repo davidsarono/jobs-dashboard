@@ -14,10 +14,18 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
 import dummy from '../../dummy.json'
+import { useEffect } from 'react';
+import { TableHead } from '@mui/material';
 
 const rows = dummy
 
 const Jobs = () => {
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(import.meta.env.VITE_API_URL)
+      const data = await res.json()
+    })()
+  }, [])
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -83,7 +91,11 @@ const Jobs = () => {
 
       {/* Table */}
       <Table sx={{ mt: 10 }}>
-        <Typography variant="h4" sx={{ p: 2 }}>Job List</Typography>
+        <TableHead>
+          <TableRow>
+            <TableCell><Typography variant="h4" sx={{ p: 2 }}>Job List</Typography></TableCell>
+          </TableRow>
+        </TableHead>
         <TableBody>
           {rows.map((row) => (
             <TableRow
