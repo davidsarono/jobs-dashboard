@@ -9,27 +9,62 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-dayjs.extend(relativeTime)
+import dayjs from 'dayjs';
 
-import dummy from '../../dummy.json'
-import { useEffect } from 'react';
-import { TableHead } from '@mui/material';
+import instance from '../../services/axios';
 
-const rows = dummy
+import { useEffect, useState } from 'react';
+import { Constants } from '../../context/AuthContext';
+
 
 const Jobs = () => {
+
+  const [state, setState] = useState({
+    rows: [],
+    page: 1,
+    perPage: 5,
+  })
+
+  const fetchJobs = async (params) => {
+    const token = localStorage.getItem(Constants.TOKEN);
+
+    const response = await instance.get(
+      '/jobs',
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        params: {
+          page: params?.page,
+          description: params?.description,
+          location: params?.location,
+          full_time: params?.full_time,
+        }
+      }
+    )
+    setState(prevState => ({ ...prevState, rows: [...prevState.rows, ...response.data.data] }))
+  }
+
+  useEffect(() => {
+    fetchJobs({ page: 1 });
+  }, [])
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      description: data.get("job-description"),
-      location: data.get("location"),
-      isFullTime: data.get("full-time-only")
-    })
+    const payload = {
+      description: data.get("job-description") || undefined,
+      location: data.get("location") || undefined,
+      isFullTime: data.get("full-time-only") || undefined
+    }
+    setState(prevState => ({ ...prevState, rows: [] }))
+    fetchJobs(payload)
   };
+
+  const handleChangePage = () => {
+    fetchJobs({ page: state.page + 1 });
+    setState(prevState => ({ ...prevState, page: prevState.page + 1 }));
+  }
 
   return (
     <>
@@ -84,29 +119,25 @@ const Jobs = () => {
       </Box>
 
       {/* Table */}
-      <Table sx={{ mt: 10 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell><Typography variant="h4" sx={{ p: 2 }}>Job List</Typography></TableCell>
-          </TableRow>
-        </TableHead>
+      <Typography variant="h4" sx={{ mt: 10, p: 2 }}>Job List</Typography>
+      <Table>
         <TableBody>
-          {rows.map((row) => (
+          {state.rows.length ? state.rows.map((row) => (
             <TableRow
-              key={row.id}
+              key={row?.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
                 <Box>
-                  <Link href={`/jobs/${row.id}`} variant="body2">
-                    {row.title}
+                  <Link href={`/jobs/${row?.id}`} variant="body2">
+                    {row?.title}
                   </Link>
                   <Box sx={{ display: 'flex' }}>
                     <Typography>
-                      {row.company}
+                      {row?.company}
                     </Typography>{' - '}
                     <Typography>
-                      {row.type}
+                      {row?.type}
                     </Typography>
                   </Box>
                 </Box>
@@ -114,17 +145,25 @@ const Jobs = () => {
               <TableCell align="right">
                 <Box>
                   <Typography>
-                    {row.location}
+                    {row?.location}
                   </Typography>
                   <Typography>
-                    {dayjs(row.created_at).from(dayjs())}
+                    {dayjs(row?.created_at).from(dayjs())}
                   </Typography>
                 </Box>
               </TableCell>
             </TableRow>
-          ))}
+          )) : null}
         </TableBody>
       </Table>
+      <Button
+        sx={{
+          mb: 2
+        }}
+        onClick={handleChangePage}
+      >
+        More Jobs
+      </Button>
     </>
   )
 }

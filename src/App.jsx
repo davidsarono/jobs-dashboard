@@ -90,7 +90,6 @@ function RequireAuth() {
           sx={{
             mt: 10,
             flexGrow: 1,
-            height: '100vh',
             overflow: 'auto',
             paddingX: 4,
             display: 'flex',
