@@ -25,4 +25,6 @@ curl --location --request GET 'localhost:5000/api/v1/auth/register' \
 5. login to `localhost:5000/login`
 6. make sure all functionality works well
 
+## Note
 [Video Evidence](https://www.loom.com/share/df7bd5566653442286eed39b32352aa6)
+[Postman Collection](https://www.getpostman.com/collections/75dedb911f3b1bb53124)
